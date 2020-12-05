@@ -1,0 +1,41 @@
+.data
+A:        .word   5,1,4,2,3         #Definindo vetor na memoria
+          .text
+          la  x22,A                 #Lendo o endereço inicial do vetor
+          li  x18,0                 #Inicializando registradores que serviram de contadores nos loops
+          li  x19,5
+          li  x20,0
+          li  x21,4
+loopi:    blt x19,x18,fimi          #Se i > 5, fim do loop i
+          beq x19,x18,fimi          #Se i == 5, fim do loop i
+          li  x20,0                 #Inicializando j com 0
+loopj:    blt x21,x20,fimj          #Se j > 4, fim do loop j
+          blt x21,x20,fimj          #Se j == 4, fim do loop j
+          add x5,x22,x20            #Incrementando o endereço do vetor
+          lw  x6, 0(x5)             #Lendo essa posição do vetor  ex: j
+          addi x21,x20,1            #Incrementando para a próxima posição do vetor
+          add x10,x22,x21           #Lendo o endereço dessa posição do vetor
+          lw  x7, 0(x10)            #Lendo o valor dessa posição  ex: j+1
+          blt x6,x7,returnj         #Se j < j+1, retornar para o loop j
+          beq x6,x7,returnj         #Se j == j+1 retornar para o looo j
+          add x11,x6,x0             #Caso contrario, regAux = j
+          add x6,x7,x0              #J = J+1
+          add x7,x11,x0             #J+1 = regAux
+          sw  x6, 0(x5)             #Escrevendo troca na memoria
+          sw  x7, 0(x10)            #Escrevendo troca na memoria
+          addi x20,x20,1            #Incrementando j++
+          beq x0,x0,loopj           #Returnando para o loop j
+returnj:  addi x20,x20,1            #Incrementando j++
+          beq x0,x0,loopj           #Returnando para o loop j
+fimj:     addi x18,x18,1            #Incrementando i++
+          beq x0,x0,loopi           #Returnando para o loop i
+fimi:     li  x18,0                 #Zerando contador
+loopd:    blt x19,x18,fim           #Loop que vai mostrar o vetor ordenado
+          beq x19,x18,fim
+          lw  x23, 0(x22)           #Reg x23 recebendo o valor de cada posição do vetor
+          addi x22,x22,1
+          addi x18,x18,1
+          beq  x0,x0,loopd
+fim:      ecaall
+          
+          

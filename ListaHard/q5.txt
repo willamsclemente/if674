@@ -1,0 +1,102 @@
+.data
+num:      .word    145
+base:     .word    10
+          .text
+          lw x18,num
+          lw x19,base
+          li x21,1
+          li x23,10
+          add x11,x18,x0
+          jal x1,size
+          add x20,x11,x0
+          beq x20,x21,fim1
+loop:     beq x22,x20,comp
+          add x11,x18,x0
+          jal x1,div
+          add x24,x11,x0
+          sub x25,x24,x15
+          add x10,x25,x0
+          jal x1,fact
+          add x26,x26,x10
+          add x15,x24,x0
+          add x11,x15,x0
+          addi x12,x0,10
+          jal x1,mul 
+          add x15,x11,x0
+          add x11,x23,x0
+          addi x12,x0,10
+          jal x1,mul
+          add x23,x11,x0
+          add x22,x22,1
+          beq x0,x0,loop
+fim1:     add x11,x18,x0
+          jal x1,fact
+          add x26,x11,x0
+          beq x0,x0,comp
+
+size:     li x5,10
+          li x6,0
+loops:    blt x11,x5,fims
+          add sp,sp,-4
+          lw x1, 0(sp)
+          add x11,x5,x0
+          addi x12,x0,10 
+          jax x1,mul
+          add x5,x11,x0
+          sw x1, 0(sp)
+          add sp,sp,4
+          add x6,x6,1
+          beq x0,x0,loops
+fims      addi x11,x6,1
+          jalr x1
+
+fact:     addi sp,sp,-8         #Função fatorial
+          sw  x1, 4(sp)
+          sw  x10, 0(sp)
+          add x5,x10,-1
+          blt x0,x5,l1
+          beq x0,x5,l1
+          addi x10,x0,1
+          addi sp,sp,8
+          jalr x1
+l1:       addi x10,x10,-1
+          jal x1,fact
+          addi x6,x10,0
+          lw x10, 0(sp)
+          lw x1, 4(sp)
+          addi sp,sp,8
+          add x11,x10,x0
+          add x12, x6,x0
+          addi sp,sp,-4
+          sw x1, 0(sp)
+          jal x1,mul
+          addi x10,x11,0
+          lw x1, 0(sp)
+          addi sp,sp,4
+          jalr x1
+
+mul       add x5,x11,x0              #Função de multiplicação
+          li x6,2
+loop1:    blt x12,x6,fim1
+          add x5,x5,x11
+          add x6,x6,1
+          beq x0,x0,loop1
+fim1:     add x11,x5,x0
+          jalr x1
+
+div:      add x5,x11,x0              #Função de divisão
+          li x6,0
+loop2:    beq x5,x0,fim2
+          blt x5,x23,fim2
+          sub x5,x5,x23
+          add x6,x6,1
+          beq x0,x0,loop2
+fim2:     add x11,x6,x0
+          jalr x1
+
+comp:     beq x26,x18,l2
+          add x18,x0,0
+          beq x0,x0,fim
+l2:       add x18,x0,1
+fim:
+         

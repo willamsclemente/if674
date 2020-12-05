@@ -1,0 +1,94 @@
+.data
+n:       .word   7             #Definindo variaveis na memoria
+s:       .word   5
+SD:      .word   0
+         .text
+         lw x18,n              #Lendo variaveis para os registradores
+         lw x19,s              
+         la x24,SD             #Lendo endereço da variavel que vai receber o resultado
+         add x10,x18,x0        #Passando 'n' como parametro 
+         jal x1,fact           #Calculando o fatorial de 'n'
+         add x20,x10,x0        #Armazenando o resultado do fatorial de 'n'
+         add x10,x19,x0        #Passando  's' como parametro
+         jal x1,fact           #Calculando o fatorial de 's'
+         add x21,x10,x0        #Armazenando o resultado do fatorial de 's'
+         sub x22,18,x19        #Subtraindo 'n-s'
+         add x10,x22,x0        #Passando  'n-s' como parametro
+         jal x1,fact           #Calculando o fatorial de 'n-s'
+         add x22,x10,x0        #Armazenando o resultado do fatorial de 'n-s' 
+         add x11,x21,x0        #Passando o fatorial de 's' como parametro
+         add x12,x22,x0        #Passando o fatorial de 'n-s'como parametro
+         jal x1,mul            #Multiplicando s! * (n-s)!
+         add x22,x11,x0        #Armazenando o resultado da multiplicação
+         add x11,x20,x0        #Passando fatorial de 'n' como parametro
+         jal x1,div            #Dividindo n! / (s!*(n-s)!)
+         add x23,x11,x0        #Armazenando o resultado da divisão anterior
+         sw  x23, 0(x24)       #Escrever o resultado na variavel na memeoria
+         add x11,x18,x0        #Passando 'n' como parametro
+         add x12,x19,x0        #Passando 's' como parametro
+         jal x1,comp           #Chamando a função de comparação
+         beq x0,x0,fim         #Indo para o fim
+
+fact:    addi sp,sp,-8         #Função fatorial
+         sw  x1, 4(sp)
+         sw  x10, 0(sp)
+         add x5,x10,-1
+         blt x0,x5,l1
+         beq x0,x5,l1
+         addi x10,x0,1
+         addi sp,sp,8
+         jalr x1
+l1:      addi x10,x10,-1
+         jal x1,fact
+         addi x6,x10,0
+         lw x10, 0(sp)
+         lw x1, 4(sp)
+         addi sp,sp,8
+         add x11,x10,x0
+         add x12, x6,x0
+         addi sp,sp,-4
+         sw x1, 0(sp)
+         jal x1,mul
+         addi x10,x11,0
+         lw x1, 0(sp)
+         addi sp,sp,4
+         jalr x1
+
+mul:     add x7,x11,x0         #Função de Multiplicação
+loop1:   blt x12,x28,fim1
+         addi x7,x7,x11
+         addi x28,x28,1
+         beq x0,x0,loop1
+fim1:    add x7,x11,x0
+         jalr x1
+
+
+div:     li x12,0              #Função de Divsão
+         add x7,x11,x0
+loop2:   beq x7,x0,fim2
+         blt x7,x22,fim2
+         sub x7,x7,x22
+         add x12,x12,1
+         beq x0,x0,loop2
+fim2:    add x11,x12,x0
+         jalr x1
+
+
+comp:    blt x12,x11,comp1     #Função de comparação
+         beq x12,x11,comp1     #SE 's" <= 'n', ir para comp1
+         li a3,3               #Se 's' > 'n', a3=3
+comp1:   blt x11,x0,res1       #Se  0 > 'n', ir ´para res1
+         blt x12,x0,res1       #Se  0 > 's', ir ´para res1
+         beq x0,x0,comp2       #Caso contrario, ir para comp2
+res1:    li a3,5               #a4=5
+comp2:   bne x11,x12,comp3     #Se n!= 's', ir para o comp3 
+         li a3,6               #Do contrario, a3 =6
+comp3:   beq x11,x0,res3       #Se 'n' == 0, ir para res3
+         beq x12,x0,res3       #Se 's' == 0, ir para res3
+         jalr x1               retornando para o chamador
+res3     li a3,7               a3=7
+         jalr x1               retornando para o chamador
+
+fim:     ecaall
+         
+         

@@ -1,0 +1,63 @@
+.data 
+S:   .asciiz "Luz Azul"                      #Entrada
+aux: .asciiz " "                             #Auxiliar para tirar possiveis espaços no codigo
+
+.text
+           la x18,S                          
+           la x24,aux
+           addi x23,x0,97                    #Auxiliares para transformar a entrada toda em letra minusculas
+           addi x25,x0,32
+
+apagaEsp:   add x20,x18,x19                  #Função que retira possiveis espaço na entrada
+            lb x21,(0),x20
+            beq x21,x0,fimApaga
+            beq x21,x25,retApaga
+            add x20,x24,x26
+            sb x21,(0),x20
+            addi x26,x26,1
+retApaga:   addi x19,x19,1
+            j apagaEsp
+
+fimApaga:   addi x19,x0,0
+            addi x26,x26,-1
+         
+tudoMin:    add x20,x24,x19                  #Função que vai transformar todas letras da entrada em minusculas 
+            lb x21,(0),x20
+            beq x21,x0,fimTudo
+            bge x21,x23,return
+            addi x21,x21,32
+            sb x21,(0),x20
+     
+return:     addi x22,x22,1
+            addi x19,x19,1
+            j tudoMin
+
+fimTudo:    addi x22,x26,2
+            addi x27,x26,2
+
+invStr:     add x20,x24,x26                  #Vai inverter as letras da entrada para testar se ela é um palindromo
+            lb x21,(0),x20
+            beq x21,x0,comp
+            add x20,x24,x22
+            sb x21,(0),x20
+            addi x26,x26,-1
+            addi x22,x22,1
+            j invStr
+         
+         
+comp:       add x20,x24,x28                  #Comparando a entrada com a entrada invertida, se forem iguais a entrada é um palindromo
+            add x22,x24,x27
+            lb x21,(0),x20
+            lb x23,(0),x22
+            beq x21,x0,palindromo
+            bne x21,x23,nPalindromo
+            addi x28,x28,1
+            addi x27,x27,1
+            j comp
+
+palindromo: addi a0,a0,1                     #a0 = 1, palindromo
+            j fimcod
+nPalindromo:addi a0,a0,0                     #a0 = 0, não é palindromo
+
+fimcod:      
+      

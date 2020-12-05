@@ -1,0 +1,166 @@
+.data
+valor1:    .asciiz "AEIOUNRS"         #Grupo de letras separados na memoria
+valor2:    .asciiz "DGT"
+valor3:    .asciiz "BCMP"
+valor4:    .asciiz "FHVWY"
+valor5:    .asciiz "K"
+valor8:    .asciiz "JLX"
+valor10:   .asciiz "QZ"
+
+palavra1:  .asciiz "GOTICO"           #Palavras dos dos dois jogador
+palavra2:  .asciiz "BOLA"
+
+.text
+           la x18,palavra1            #Lendo a palavra do primeiro jogador 1
+           addi x25,x0,1
+           
+loop:      add x20,x18,x21            #Loop que procura cada letra da palavra do jogador em cada grupo de letras 
+           lb x22,(0),x20
+           beq x22,x0,fimloop
+           
+           jal teste1                 #Procurando se a letra da palavra do jogador no grupo 1
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+           jal teste2                 #Procurando se a letra da palavra do jogador no grupo 2
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+           jal teste3                 #Procurando se a letra da palavra do jogador no grupo 3
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+            
+           jal teste4                 #Procurando se a letra da palavra do jogador no grupo 4
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+           jal teste5                 #Procurando se a letra da palavra do jogador no grupo 5
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+           jal teste8                 #Procurando se a letra da palavra do jogador no grupo 8
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+           jal teste10                #Procurando se a letra da palavra do jogador no grupo 10
+           beq x24,x25,retloop        #Se achou, procurar outra letra
+           
+retloop:   addi x24,x0,0              #Retornando para procurar outra letra
+           addi x21,x21,1
+           j loop
+           
+fimloop:   beq x19,x25,compara        #Se já procurou cada letra de cada palavra nos grupos, compara o valores delas 
+           addi x24,x0,0
+           addi x21,x0,0
+           addi x26,x23,0 
+           addi x23,x0,0
+           addi x19,x0,1
+           la x18,palavra2
+           j loop
+
+teste1:   la x27,valor1              #Testando se a letra de cada palavra está no grupo 1
+loopt1:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt1
+          beq x22,x6,cont1           #Se achou a letra nesse grupo, va para cont1
+          addi x5,x5,1
+          j loopt1
+
+cont1:    addi x23,x23,1             #Achou a letra nesse grupo, adicione 1 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt1:addi x5,x0,0
+          jalr x0,0(x1)
+          
+teste2:   la x27,valor2              #Testando se a letra de cada palavra está no grupo 2
+loopt2:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt2
+          beq x22,x6,cont2           #Se achou a letra nesse grupo, va para cont2
+          addi x5,x5,1
+          j loopt2
+
+cont2:    addi x23,x23,2             #Achou a letra nesse grupo, adicione 2 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt2:addi x5,x0,0
+          jalr x0,0(x1)
+
+teste3:   la x27,valor3              #Testando se a letra de cada palavra está no grupo 3
+loopt3:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt3
+          beq x22,x6,cont3           #Se achou a letra nesse grupo, va para cont3
+          addi x5,x5,1
+          j loopt3
+
+cont3:    addi x23,x23,3             #Achou a letra nesse grupo, adicione 3 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1  
+          
+fimloopt3:addi x5,x0,0
+          jalr x0,0(x1)
+          
+teste4:   la x27,valor4              #Testando se a letra de cada palavra está no grupo 4
+loopt4:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt4        #Se achou a letra nesse grupo, va para cont4
+          beq x22,x6,cont4
+          addi x5,x5,1
+          j loopt4
+
+cont4:    addi x23,x23,4             #Achou a letra nesse grupo, adicione 4 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt4:addi x5,x0,0
+          jalr x0,0(x1)
+          
+teste5:   la x27,valor5              #Testando se a letra de cada palavra está no grupo 5
+loopt5:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt5
+          beq x22,x6,cont5           #Se achou a letra nesse grupo, va para cont5        
+          addi x5,x5,1
+          j loopt5
+
+cont5:    addi x23,x23,5             #Achou a letra nesse grupo, adicione 5 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt5:addi x5,x0,0
+          jalr x0,0(x1) 
+          
+teste8:   la x27,valor8              #Testando se a letra de cada palavra está no grupo 8
+loopt8:   add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt8
+          beq x22,x6,cont8           #Se achou a letra nesse grupo, va para cont8
+          addi x5,x5,1
+          j loopt8
+
+cont8:    addi x23,x23,8              #Achou a letra nesse grupo, adicione 8 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt8:addi x5,x0,0
+          jalr x0,0(x1)  
+          
+teste10:  la x27,valor10              #Testando se a letra de cada palavra está no grupo 10
+loopt10:  add x20,x27,x5
+          lb x6,(0),x20
+          beq x6,x0,fimloopt10
+          beq x22,x6,cont10           #Se achou a letra nesse grupo, va para cont10
+          addi x5,x5,1
+          j loopt10
+
+cont10:   addi x23,x23,10             #Achou a letra nesse grupo, adicione 10 ao contador de valores da palavra e retorne 1
+          addi x24,x0,1
+          
+fimloopt10:addi x5,x0,0
+          jalr x0,0(x1)  
+          
+
+compara:  beq x26,x23,E               #Se o contadores de valores igual, E
+          blt x26,x23,B               #Se jogador 2 ganhou, B
+          J A                         #Caso contrario, jogador 1 ganhou, A
+
+E:        addi x7,x0,69               #x7 = E
+          j fim
+B:        addi x7,x0,66               #x7 = B
+          j fim
+A:        addi x7,x0,65               #x7 = A
+
+fim:
+          
+          

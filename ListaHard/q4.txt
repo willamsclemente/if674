@@ -1,0 +1,37 @@
+.data
+entrada:    .string     "1-2-3-4-5"    #Definindo string na memoria
+v:          .string     "-"            #Usado para comparação
+res:        .word       0              #Vai receber o resultado da multiplicação
+            .text
+            la x18, entrada            #Lendo o endereço inicial da string 
+            lb x19,v                   #Lendo o caractere de comparação
+            la x22, res                #Lendo o endereço da variavel que irar receber a multiplicação
+            add x20,x0,1               #Inicializando reg auxiliar
+loop:       lb x21, 0(x18)             #Lendo o byte com um caractere da string
+            beq x21,x19,l1             #Se ele for igual a '-' ir para l1
+            beq x21,x0,fim             #Se ele for caractere nulo ir para fim 
+            addi x21,x21,-48           #Transformando o caractere em número
+            add x11,x20,x0             #Passando numero como parametro
+            jal x1,mul                 #Chamando a função de multiplicação
+            addi x20,x11,x0            #Colando o resultado da multiplicação no reg auxiliar
+            addi x0,x0,1               #Incrementando reg que guarda quantidade de números
+            add x18,x18,1              #Apontando para o próximo byte da string        
+            beq x0,x0,loop             #Retornando ao loop
+l1:         add x18,x18,1              #Apontando para o próximo byte da string
+            beq x0,x0,loop             #Retornando ao loop
+
+mul:        add x5,x11,x0              #Função de multiplicação
+            li x6,2
+loop1:      bnt x21,x6,fim1
+            add x5,x5,x11
+            add x6,x6,1
+            beq x0,x0,loop1
+fim1:       add x11,x5,0
+            jalr x1
+
+fim:        sw  x20, 0(x22)            #Escrevendo resultado na memoria
+
+
+
+
+            

@@ -1,0 +1,35 @@
+.data
+conjunto:  .asciiz  "xrnrclszumskvbqchuwtgyvieip"   #Entrada
+palavra:   .asciiz  "riscv"                         #Palava a ser procurada na entrada
+
+.text
+           la x18,palavra
+           la x19,conjunto
+           addi x22,x0,1                            #Valor auxiliar no codigo
+           
+loop:      add x20,x18,x21                          #Retira as letras da palavra e ver se encontra elas na entrada
+           lb x26,(0),x20
+           beq x26,x0,fimloop                       #Se achou todas as letras da palavra na entrada, sai do loop e procure novamente a palavra
+           jal busca                                #Chamando a função que busca uma letra da palavra na entrada
+           beq x23,x22,fim                          #Se não achou a letra da palavra na entrada, não é possivel mais forma a palavra
+           addi x21,x21,1
+           j loop
+
+fimloop:   addi a0,a0,1                             #Achou mais uma vez a palavra na entrada
+           addi x21,x0,0                            #Começando a buscar as letras da palavra na entrada de novo
+           j loop
+
+busca:    add x20,x19,x24                           #Função de busca da letra da palavra na entrada
+          lb x25,(0),x20
+          beq x25,x0,fimbusca
+          beq x25,x26,achou                         #Se achou a letra, chamar achou
+          addi x24,x24,1
+          j busca
+          
+achou:    sb x22,(0),x20                            #Se achou a letra, escreve 1 nessa posição na string entrada
+          addi x24,x0,0
+          jalr x0,0(x1)
+          
+fimbusca: addi x23,x0,1                             #Achou a letra na palavra, retornar 1 para continuar a procura
+          jalr x0,(0)x1
+fim:

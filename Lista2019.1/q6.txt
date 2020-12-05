@@ -1,0 +1,47 @@
+.data
+Entrada:     .word  1234                  #Entrada
+
+.text
+              lw x19,Entrada              #Lendo entrada
+              li x20,10000                #Valores auxiliares do codigo
+              li x21,10
+              jal tamanho                 #Chamando a função que calcula o numero de digitos da entrada
+      
+loop:         beq x20,x0,fim              #Retira os digitos da entrada e faz a soma de seus fatorias 
+              div x22,x19,x20
+              add x10,x22,x0
+              jal fact                    #Chamando a função que realiza o fatorial dos digitos
+              add x18,x18,x10
+              mul x23,x20,x22
+              sub x19,x19,x23
+              div x20,x20,x21
+              j loop
+
+
+tamanho:                                  #Função que calcula o numero de digitos da entrada
+
+loopt:         blt x19,x20,fimloopt
+               jalr x0,0(x1)  
+fimloopt:      div x20,x20,x21
+               j loopt
+               
+               
+fact:                                      #Função que calcula o fatorial de cada digito
+               addi x2,x2,-8
+               sw x1,4(x2)
+               sw x10,0(x2)
+               addi x5,x10,-1
+               bge x5,x0,L1
+               addi x10,x0,1
+               addi x2,x2,8
+               jalr x0,0(x1)
+L1:            addi x10,x10,-1
+               jal x1,fact
+               addi x6,x10,0
+               lw x10,0(x2)
+               lw x1,4(x2)
+               addi x2,x2,8
+               mul x10,x10,x6
+               jalr x0,0(x1)
+               
+fim:

@@ -1,0 +1,44 @@
+.data
+mensagem:      .string    "X8X8Va"        #Definindo mensagem criptografada na memoria
+               .text
+               la x18,mensagem            #Lendo o endereço inicial da mensagem
+               li x19,10                  #Reg auxiliar
+loop:          lb x20, 0(x18)             #Lendo um byte com um caractere da mensagem ex: 56
+               beq x20,x0,fim             #Se ele for nulo va para o fim
+               add x11,x20,x0             #Se não, passar o caractere como parametro para a função div     
+               jal x1,div                 #Chamando a função de divisão, dividindo o caractere por dez ex: 56/10=5
+               add x21,x11,x0             #Passando o resultado para o reg
+               jax x1,mul                 #Multiplicando esse resultado por 10 ex:5*50=50
+               add x22,x11,x0             #Passando o resultado para o reg
+               sub x23,x20,x22            #Retirando o segundo digito da representação decimal do caractere ex:56-50=6
+               Add x11,x23,x0             #Passando ele como parametro
+               jal x1,mul                 #Multiplicando ele por 10   ex:6*10=60  
+               add x24,x11,x0             #Armezando o resultado
+               add x25,x24,x21            #Invertendo a representação decimal ex:60+5=65
+               sb  x25, 0(x18)            #Armezando o resultado na memoria
+               add x18,x18,1              #Incrementando o endereço
+               beq x0,x0,loop             #Retornando ao loop
+
+mul            add x5,x11,x0              #Função de multiplicação
+               li x6,2
+loop1:         bnt x19,x6,fim1
+               add x5,x5,x11
+               add x6,x6,1
+               beq x0,x0,loop1
+fim1:          add x11,x5,x0
+               jalr x1            
+
+div:           add x5,x11,x0              #Função de divisão
+               li x6,0
+loop2:         beq x5,x0,fim2
+               blt x5,x19,fim2
+               sub x5,x5,x19
+               add x6,x6,1
+               beq x0,x0,loop2
+fim2:          add x11,x6,x0
+               jalr x1
+
+fim:            ecaall
+               
+               
+               
